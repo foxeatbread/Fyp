@@ -83,6 +83,21 @@ class UserProvider extends React.Component {
     });
   }
 
+  logout = () => {
+    this.setState({
+      userInfo: {
+        id: null,
+        username: "",
+        email: "",
+        likes: [],
+        publish: [],
+      },
+      isAuthenticated: false,
+      authToken: null,
+    });
+    localStorage.removeItem("token"); // 假设你使用localStorage存储token
+  }
+
   render() {
     return (
       <UserContext.Provider
@@ -97,6 +112,7 @@ class UserProvider extends React.Component {
           updateTheme: this.updateTheme,
           addFavouriteInPage: this.addFavourite,
           removeFavouriteInPage: this.removeFavourite,
+          logout: this.logout,
         }}
       >
         {this.props.children}

@@ -9,12 +9,12 @@ import UserContext from "../../context/UserContext/UserContext";
 import "../../tailwind.generated.css";
 
 function NavBar() {
-  const context = useContext(ThemeContext);
-  const { userInfo, isAuthenticated } = useContext(UserContext)
+  const themeContext = useContext(ThemeContext);
+  const { userInfo, isAuthenticated, logout } = useContext(UserContext);
 
   let mode;
 
-  if (context.theme === "light") {
+  if (themeContext.theme === "light") {
     mode = (
       <Fragment>
         <span className="mr-1">
@@ -23,7 +23,7 @@ function NavBar() {
         Dark Mode
       </Fragment>
     );
-  } else if (context.theme === "dark") {
+  } else if (themeContext.theme === "dark") {
     mode = (
       <Fragment>
         <span className="mr-1">
@@ -35,21 +35,24 @@ function NavBar() {
   }
 
   const themeChanger = () => {
-    if (context.theme === "light") {
-      context.updateTheme("dark");
+    if (themeContext.theme === "light") {
+      themeContext.updateTheme("dark");
     } else {
-      context.updateTheme("light");
+      themeContext.updateTheme("light");
     }
+  };
+  // 登出操作
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // 或sessionStorage
+    // 更新UserContext或其他状态管理工具以反映用户未登录
+    logout(); // 假设这是更新状态的函数
   };
 
   return (
     <nav className="bg-background-tertiary text-copy-primary px-12 flex items-center justify-between flex-wrap bg-gray-800 p-6">
       <div className="flex items-center hover:text-copy-secondary flex-shrink-0 text-white mr-6">
         <Link to="/">
-          <span
-            className="inline-block relative"
-            style={{ top: "-4px" }}
-          >
+          <span className="inline-block relative" style={{ top: "-4px" }}>
             <FastfoodIcon />
           </span>
           <span className="font-semibold ml-2 text-xl tracking-tight">
@@ -58,26 +61,26 @@ function NavBar() {
         </Link>
       </div>
       <div className="sm:block flex-grow flex items-center w-auto">
-        {
-          isAuthenticated ? (
+        {isAuthenticated ? (
+          <Fragment>
             <Link to="/user">
               <span className="font-semibold ml-2 text-xl tracking-tight">
                 {userInfo.username}
               </span>
-            </Link>) : (
-            <Link to="/login">
-              <span className="font-semibold ml-2 text-xl tracking-tight">
-                Login
-              </span>
             </Link>
-          )
-        }
-
+            <button onClick={handleLogout} className="font-semibold ml-8 text-xl tracking-tight">
+              Logout
+            </button>
+          </Fragment>
+        ) : (
+          <Link to="/login">
+            <span className="font-semibold ml-2 text-xl tracking-tight">
+              Login
+            </span>
+          </Link>
+        )}
         <div className="text-md flex-grow text-right">
-          <button
-            onClick={themeChanger}
-            className="outline-none focus:outline-none border-none hover:text-copy-secondary"
-          >
+          <button onClick={themeChanger} className="outline-none focus:outline-none border-none hover:text-copy-secondary">
             {mode}
           </button>
         </div>
