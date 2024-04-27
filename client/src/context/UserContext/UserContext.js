@@ -23,7 +23,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         isAuthenticated: true,
-        userInfo: action.payload, // Assuming payload contains user info
+        userInfo: action.payload,
       };
     case ActionTypes.LOGOUT:
       return {

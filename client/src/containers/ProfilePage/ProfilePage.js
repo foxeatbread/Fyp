@@ -111,8 +111,28 @@ export default function Profile() {
     }
   };
 
-  const handleEditClick = (id) => {
-
+  const handleEditClick = async (id) => {
+    try {
+      const response = await axios.delete(`/api/recipes/${id}`);
+      if (response.status === 200) {
+        console.log(`Recipe with ID ${id} deleted successfully`);
+        fetchData();
+      } else {
+        console.error('Failed to delete recipe:', response.status);
+      }
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+    }
+  };
+  const fetchData = async () => {
+    try {
+      // 发送请求重新获取数据
+      const response = await axios.get('/api/recipes');
+      // 更新状态或执行其他操作来更新页面
+      setPublishedRecipes(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
   useEffect(() => {
